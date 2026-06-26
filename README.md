@@ -1,58 +1,170 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Clínica Vida Plena — Landing Page
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Landing page profesional para una clínica médica en Venezuela, construida con Laravel 11, Blade, Tailwind CSS 3 y Alpine.js. Diseñada para convertir visitantes en pacientes mediante un formulario de citas y botón de WhatsApp.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tech Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Capa | Tecnología |
+|------|-----------|
+| Backend | Laravel 11 |
+| Templates | Blade |
+| Estilos | Tailwind CSS 3 |
+| Interactividad | Alpine.js 3 |
+| Base de datos | MySQL 8 |
+| Emails | Laravel Mail + SMTP (Mailpit en dev) |
+| Build tool | Vite 8 |
+| Web server | Nginx 1.25 (Docker) |
+| Runtime | PHP 8.3-FPM (Docker) |
+| Deploy | Railway |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Secciones
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Header** — Navegación sticky con menú hamburguesa (Alpine.js)
+- **Hero** — Dos columnas, headline y CTAs hacia formulario de contacto
+- **Trust Bar** — Métricas clave: +2000 pacientes, 15 años, 8 especialidades
+- **Servicios** — Grid de 6 especialidades médicas con iconos SVG
+- **Equipo** — 3 médicos con foto, especialidad y años de experiencia
+- **Testimonios** — 3 reseñas de pacientes con valoración de 5 estrellas
+- **Contacto** — Formulario de cita + mapa + datos de la clínica
+- **Footer** — Links, redes sociales y copyright
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Requisitos
 
-## Agentic Development
+- Docker y Docker Compose v2
+- Git
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
+
+## Instalación local (Docker)
 
 ```bash
-composer require laravel/boost --dev
+# 1. Clonar el repositorio
+git clone https://github.com/saeseduardo/cl-nica-vida-plena.git
+cd cl-nica-vida-plena
 
-php artisan boost:install
+# 2. Copiar variables de entorno para Docker
+cp .env.example .env
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Edita `.env` con estos valores para que apunte a los servicios Docker:
 
-## Contributing
+```env
+APP_URL=http://localhost:8080
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=clinica_vida_plena
+DB_USERNAME=clinica_user
+DB_PASSWORD=clinica_pass
 
-## Code of Conduct
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+MAIL_FROM_ADDRESS=contacto@clinicavidaplena.com
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+# 3. Levantar los contenedores
+docker compose up -d
 
-## Security Vulnerabilities
+# 4. Instalar dependencias PHP
+docker compose exec app composer install
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 5. Generar clave de aplicación
+docker compose exec app php artisan key:generate
 
-## License
+# 6. Ejecutar migraciones
+docker compose exec app php artisan migrate
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# 7. Instalar dependencias JS y compilar assets
+docker compose exec app npm install
+docker compose exec app npm run build
+```
+
+---
+
+## URLs locales
+
+| Servicio | URL |
+|----------|-----|
+| Landing page | http://localhost:8080 |
+| Mailpit (emails) | http://localhost:8025 |
+| MySQL | localhost:3307 |
+
+---
+
+## Comandos útiles
+
+```bash
+# Ver logs en tiempo real
+docker compose logs -f
+
+# Acceder al shell del contenedor
+docker compose exec app sh
+
+# Recompilar assets en modo desarrollo (hot reload)
+docker compose exec app npm run dev
+
+# Parar todos los contenedores
+docker compose down
+
+# Parar y borrar la base de datos (reset completo)
+docker compose down -v
+```
+
+---
+
+## Paleta de colores
+
+| Nombre | Hex | Uso |
+|--------|-----|-----|
+| `blue-ice` | `#F0F7FF` | Fondos alternos de sección |
+| `blue-med` | `#1A6FA8` | Color primario, botones, CTAs |
+| `green-health` | `#2DAA7E` | Acentos, iconos, estados de éxito |
+| `dark-blue` | `#1C2B3A` | Texto principal |
+
+---
+
+## Estructura de vistas
+
+```
+resources/views/
+├── layouts/
+│   └── app.blade.php          ← Layout base (SEO, fonts, assets)
+├── sections/
+│   ├── header.blade.php
+│   ├── hero.blade.php
+│   ├── trust-bar.blade.php
+│   ├── services.blade.php
+│   ├── team.blade.php
+│   ├── testimonials.blade.php
+│   ├── contact.blade.php
+│   └── footer.blade.php
+└── welcome.blade.php          ← Vista principal
+```
+
+---
+
+## Deploy en Railway
+
+Railway detecta el `Dockerfile` automáticamente. Solo es necesario configurar las variables de entorno en el dashboard:
+
+```env
+APP_ENV=production
+APP_KEY=           # php artisan key:generate --show
+APP_URL=https://tu-app.up.railway.app
+DB_*               # Conectar el plugin MySQL de Railway
+MAIL_*             # Credenciales SMTP reales
+```
+
+---
+
+*Proyecto de portafolio — Eduardo Argenis | Full Stack Developer*  
+*GitHub: [github.com/saeseduardo](https://github.com/saeseduardo)*
